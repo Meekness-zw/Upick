@@ -1,31 +1,36 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function ServiceCTA() {
   return (
-    <section className="py-20 md:py-32 bg-primary">
+    <section className="py-20 bg-primary">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-3xl mx-auto"
+          className="max-w-3xl mx-auto text-center"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-black">
+          <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
             Ready to Get Started?
           </h2>
-          <p className="text-lg text-black/80 mb-8">
-            Contact our team today to discuss your logistics needs and discover how we can help streamline your operations
+          <p className="text-lg text-primary-foreground/90 mb-8">
+            Join thousands of satisfied customers who trust Upick for their delivery needs. Experience the difference today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-black text-white hover:bg-black/90">
-              Request a Quote
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/register">
+                Sign Up Now
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-black text-black hover:bg-black/10">
-              Contact Sales
+            <Button asChild size="lg" variant="outline" className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10">
+              <Link href="/contact">
+                Contact Sales
+              </Link>
             </Button>
           </div>
         </motion.div>

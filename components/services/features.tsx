@@ -1,97 +1,77 @@
 "use client"
 
-import Image from "next/image"
 import { motion } from "framer-motion"
-import { Check } from "lucide-react"
+import { CheckCircle2, Clock, Shield, Truck, Users, Zap } from "lucide-react"
 
 const features = [
   {
-    title: "Real-Time Tracking",
-    description: "Track your shipments in real-time with our advanced GPS tracking system",
+    title: "Fast Delivery",
+    description: "Quick and efficient delivery services to meet your deadlines",
+    icon: Zap
   },
   {
-    title: "24/7 Customer Support",
-    description: "Our dedicated support team is available around the clock to assist you",
+    title: "Real-time Tracking",
+    description: "Track your shipments in real-time with our advanced system",
+    icon: Clock
   },
   {
-    title: "Secure Handling",
-    description: "Your cargo is handled with utmost care and security throughout its journey",
+    title: "Secure Transport",
+    description: "Your goods are protected with our secure transportation",
+    icon: Shield
   },
   {
-    title: "Flexible Solutions",
-    description: "Customizable logistics solutions to meet your specific requirements",
+    title: "Professional Drivers",
+    description: "Experienced and trained drivers for safe delivery",
+    icon: Users
   },
   {
-    title: "Global Network",
-    description: "Access to an extensive network of trusted partners worldwide",
+    title: "Fleet Management",
+    description: "Efficient management of our delivery fleet",
+    icon: Truck
   },
   {
-    title: "Cost Optimization",
-    description: "Efficient routing and consolidation to minimize your logistics costs",
-  },
+    title: "Quality Service",
+    description: "Commitment to providing the best service quality",
+    icon: CheckCircle2
+  }
 ]
 
 export default function ServiceFeatures() {
   return (
-    <section className="py-20 md:py-32 bg-muted/30">
+    <section className="py-20 bg-secondary">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-12 gap-8 lg:gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="md:col-span-7 relative h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-xl"
-          >
-            <Image 
-              src="/images/truck-container.jpg"
-              alt="Upick logistics features"
-              fill
-              className="object-cover object-center"
-              sizes="(max-width: 768px) 100vw, 60vw"
-              quality={90}
-            />
-          </motion.div>
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Why Choose Our Services
+          </h2>
+          <p className="text-lg text-foreground max-w-2xl mx-auto">
+            We provide reliable and efficient delivery solutions with a focus on quality and customer satisfaction
+          </p>
+        </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="md:col-span-5 space-y-8"
-          >
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Why Choose Our Services
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                Experience the difference with our comprehensive logistics solutions and dedicated support
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="bg-background rounded-xl p-6 shadow-lg"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <feature.icon className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground">
+                  {feature.title}
+                </h3>
+              </div>
+              <p className="text-foreground">
+                {feature.description}
               </p>
-            </div>
-
-            <div className="grid gap-6">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="flex gap-4"
-                >
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="bg-primary/10 rounded-full p-2">
-                      <Check className="h-5 w-5 text-primary" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

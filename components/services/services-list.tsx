@@ -1,51 +1,77 @@
 "use client"
 
-import Image from "next/image"
 import { motion } from "framer-motion"
+import { Truck, Package, Clock, MapPin, Shield, Users } from "lucide-react"
+import Image from "next/image"
 
 const services = [
   {
-    title: "Land Transport",
-    description: "Efficient and reliable road freight solutions across the country",
-    image: "/images/land-transport.jpg",
+    title: "Local Delivery",
+    description: "Fast and reliable delivery services within your city",
+    icon: Truck,
+    features: ["Same-day delivery", "Real-time tracking", "City-wide coverage"]
   },
   {
-    title: "Ocean Freight",
-    description: "Global shipping solutions for your international cargo needs",
-    image: "/images/ocean-freight.jpg",
+    title: "Package Handling",
+    description: "Professional handling of your valuable packages",
+    icon: Package,
+    features: ["Secure packaging", "Insurance options", "Careful handling"]
   },
   {
-    title: "Custom Clearance",
-    description: "Expert handling of customs documentation and procedures",
-    image: "/images/custom-clearance.jpg",
+    title: "Express Service",
+    description: "Priority delivery for time-sensitive items",
+    icon: Clock,
+    features: ["Quick pickup", "Priority routing", "Status updates"]
   },
   {
-    title: "Shared Container",
-    description: "Cost-effective solutions for smaller shipments",
-    image: "/images/shared-container.jpg",
+    title: "Route Optimization",
+    description: "Efficient delivery routes for multiple stops",
+    icon: MapPin,
+    features: ["Smart routing", "Traffic avoidance", "Fuel efficiency"]
   },
+  {
+    title: "Secure Transport",
+    description: "Safe and secure transportation of your goods",
+    icon: Shield,
+    features: ["GPS tracking", "Secure vehicles", "Trained drivers"]
+  },
+  {
+    title: "Business Solutions",
+    description: "Custom delivery solutions for businesses",
+    icon: Users,
+    features: ["Bulk shipping", "Regular schedules", "Dedicated support"]
+  }
 ]
 
 export default function ServicesList() {
   return (
-    <section className="py-20 md:py-32">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-            Comprehensive Logistics Solutions
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            From local deliveries to international shipping, we offer a complete range of logistics services
-          </p>
-        </motion.div>
+    <section className="pt-0">
+      {/* Header background image section */}
+      <div className="relative w-full h-[320px] md:h-[400px] lg:h-[480px] flex items-center justify-center">
+        <Image
+          src="/images/shared-container.jpg"
+          alt="Services background"
+          fill
+          className="object-cover object-center"
+          priority
+          quality={90}
+          style={{ zIndex: 0 }}
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div className="text-center max-w-3xl mx-auto px-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg mb-4">
+              Our Services
+            </h1>
+            <p className="text-lg text-white drop-shadow-md">
+              Discover our comprehensive range of delivery and transportation services designed to meet your needs
+            </p>
+          </div>
+        </div>
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+      {/* Main content below header image */}
+      <div className="container mx-auto px-4 mt-12 md:mt-20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -53,23 +79,27 @@ export default function ServicesList() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-card rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
             >
-              <div className="relative h-[300px]">
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  fill
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  quality={90}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <service.icon className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground">
+                  {service.title}
+                </h3>
               </div>
-              <div className="relative p-6 md:p-8">
-                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                <p className="text-muted-foreground">{service.description}</p>
-              </div>
+              <p className="text-foreground mb-4">
+                {service.description}
+              </p>
+              <ul className="space-y-2">
+                {service.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2 text-foreground">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           ))}
         </div>

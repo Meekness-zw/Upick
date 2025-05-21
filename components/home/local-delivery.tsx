@@ -25,7 +25,7 @@ const features = [
 
 export default function LocalDelivery() {
   return (
-    <section className="py-20 md:py-32 bg-gray-100">
+    <section className="py-20 md:py-32 bg-secondary">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-12 gap-8 lg:gap-16 items-center">
           <motion.div
@@ -35,10 +35,10 @@ export default function LocalDelivery() {
             transition={{ duration: 0.5 }}
             className="md:col-span-5 space-y-6"
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
               Local Deliveries at Your Fingertips
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-foreground">
               Experience lightning-fast local deliveries within your city. Our fleet of motorcycle couriers ensures your packages arrive quickly and safely.
             </p>
             <div className="space-y-4">
@@ -55,8 +55,8 @@ export default function LocalDelivery() {
                     <feature.icon className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    <h3 className="font-semibold text-foreground">{feature.title}</h3>
+                    <p className="text-sm text-foreground">{feature.description}</p>
                   </div>
                 </motion.div>
               ))}

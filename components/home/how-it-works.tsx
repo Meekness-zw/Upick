@@ -15,7 +15,7 @@ export default function HowItWorks() {
           className="text-center max-w-3xl mx-auto mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Get The App</h2>
-          <p className="text-muted-foreground">
+          <p className="text-foreground/80">
             Join over 4.5 million partners worldwide that earn with Upick. For drivers, couriers, business owners, cargo
             owners and fleet owners looking for new ways to boost revenue.
           </p>

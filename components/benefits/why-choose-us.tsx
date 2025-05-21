@@ -14,7 +14,7 @@ export default function WhyChooseUs() {
           className="max-w-4xl mx-auto text-center"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Us?</h2>
-          <p className="text-lg md:text-xl text-muted-foreground">
+          <p className="text-lg md:text-xl text-foreground/80">
             From everyday deliveries to business-scale logistics, Upick gives you more control, flexibility, and earning
             potential — all in one platform.
           </p>

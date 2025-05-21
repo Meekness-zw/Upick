@@ -3,11 +3,14 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+import { useTheme } from "next-themes"
 
 export default function Hero() {
+  const { theme } = useTheme()
+
   return (
     <section className="relative min-h-screen">
-      <div className="bg-primary py-20 md:py-32 relative z-10">
+      <div className={`${theme === 'dark' ? 'bg-black' : 'bg-primary'} py-20 md:py-32 relative z-10`}>
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -15,13 +18,15 @@ export default function Hero() {
             transition={{ duration: 0.5 }}
             className="max-w-3xl mx-auto"
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-black mb-6">
+            <h1 className={`text-4xl md:text-6xl font-bold ${theme === 'dark' ? 'text-white' : 'text-black'} mb-6`}>
               Ship Anything.
               <br />
               Anytime.
             </h1>
-            <p className="text-lg md:text-xl text-black/80 mb-8">Mobile. Reliable. Efficient. On Demand.</p>
-            <Button size="lg" className="bg-black text-white hover:bg-black/80">
+            <p className={`text-lg md:text-xl ${theme === 'dark' ? 'text-white/80' : 'text-black/80'} mb-8`}>
+              Mobile. Reliable. Efficient. On Demand.
+            </p>
+            <Button size="lg" className={`${theme === 'dark' ? 'bg-white text-black hover:bg-white/90' : 'bg-black text-white hover:bg-black/80'}`}>
               Download the app
             </Button>
           </motion.div>
