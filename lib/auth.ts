@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { NextAuthOptions } from "next-auth"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
 
@@ -47,13 +47,13 @@ export const authOptions: NextAuthOptions = {
           },
         })
 
-        if (!user || !user?.hashedPassword) {
+        if (!user || !user?.password) {
           return null
         }
 
         const isCorrectPassword = await bcrypt.compare(
           credentials.password,
-          user.hashedPassword
+          user.password
         )
 
         if (!isCorrectPassword) {
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       const dbUser = await prisma.user.findFirst({
         where: {
-          email: token.email,
+          email: token.email as string,
         },
       })
 
@@ -93,7 +93,7 @@ export const authOptions: NextAuthOptions = {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
-        picture: dbUser.image,
+        picture: null,
       }
     },
   },
