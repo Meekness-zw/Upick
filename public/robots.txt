@@ -1,6 +1,43 @@
 # *
 User-agent: *
 Allow: /
+Allow: /about
+Allow: /services
+Allow: /contact
+Allow: /blog/*
+Allow: /pricing
+Allow: /faq
+Disallow: /api/*
+Disallow: /admin/*
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /dashboard/*
+Disallow: /profile/*
+Disallow: /_*
+Disallow: /404
+Disallow: /500
+
+# GPTBot
+User-agent: GPTBot
+Disallow: /
+
+# ChatGPT-User
+User-agent: ChatGPT-User
+Disallow: /
+
+# Google-Extended
+User-agent: Google-Extended
+Disallow: /
+
+# CCBot
+User-agent: CCBot
+Disallow: /
+
+# anthropic-ai
+User-agent: anthropic-ai
+Disallow: /
 
 # Host
 Host: https://www.upick.co.zw
