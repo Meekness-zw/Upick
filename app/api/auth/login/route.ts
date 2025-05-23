@@ -1,88 +1,66 @@
 import { NextResponse } from "next/server"
-import { z } from "zod"
-import { prisma } from "@/lib/prisma"
-import { compare } from "bcryptjs"
-import { sign } from "jsonwebtoken"
+import { compare } from "bcrypt"
+import prisma from "@/lib/prisma"
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-})
-
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const body = await req.json()
-    const result = loginSchema.safeParse(body)
+    const body = await request.json()
+    const { email, password } = body
 
-    if (!result.success) {
+    if (!email || !password) {
       return NextResponse.json(
-        { message: "Invalid input", errors: result.error.errors },
+        { error: "Email and password are required" },
         { status: 400 }
       )
     }
 
-    const { email, password } = result.data
-
-    // Find user
     const user = await prisma.user.findUnique({
       where: { email },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        password: true,
-      },
     })
 
     if (!user) {
       return NextResponse.json(
-        { message: "Invalid email or password" },
+        { error: "Invalid email or password" },
         { status: 401 }
       )
     }
 
-    // Verify password
-    const isValidPassword = await compare(password, user.password)
+    const isPasswordValid = await compare(password, user.password)
 
-    if (!isValidPassword) {
+    if (!isPasswordValid) {
       return NextResponse.json(
-        { message: "Invalid email or password" },
+        { error: "Invalid email or password" },
         { status: 401 }
       )
     }
 
-    // Generate JWT token
-    const token = sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || "your-secret-key",
-      { expiresIn: "1d" }
-    )
-
-    // Remove password from user object
-    const { password: _, ...userWithoutPassword } = user
-
-    // Set cookie and return user data
-    const response = NextResponse.json(
-      { 
-        message: "Login successful",
-        user: userWithoutPassword
+    const session = await prisma.session.create({
+      data: {
+        userId: user.id,
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
       },
-      { status: 200 }
-    )
+    })
 
-    response.cookies.set("token", token, {
+    const response = NextResponse.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    })
+
+    response.cookies.set("session", session.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 30 * 24 * 60 * 60, // 30 days
     })
 
     return response
   } catch (error) {
     console.error("Login error:", error)
     return NextResponse.json(
-      { message: "Something went wrong" },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

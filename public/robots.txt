@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.upick.co.zw
+
+# Sitemaps
+Sitemap: https://www.upick.co.zw/sitemap.xml

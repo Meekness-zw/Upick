@@ -4,10 +4,10 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { motion } from "framer-motion"
-import { registerSchema, type RegisterFormData } from "@/lib/validations/auth"
 import {
   Form,
   FormControl,
@@ -16,24 +16,36 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { useToast } from "@/components/ui/use-toast"
+
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+})
+
+type FormData = z.infer<typeof formSchema>
 
 export default function RegisterForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const { toast } = useToast()
 
-  const form = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
-      phoneNumber: "",
-      address: "",
     },
   })
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true)
     try {
       const response = await fetch("/api/auth/register", {
@@ -41,33 +53,31 @@ export default function RegisterForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
       })
 
-      const responseData = await response.json()
+      const result = await response.json()
 
       if (!response.ok) {
-        if (responseData.errors) {
-          // Handle validation errors
-          responseData.errors.forEach((error: any) => {
-            form.setError(error.path[0] as any, {
-              message: error.message,
-            })
-          })
-        } else {
-          // Handle other errors
-          form.setError("root", {
-            message: responseData.message || "Something went wrong",
-          })
-        }
-        return
+        throw new Error(result.error || "Failed to register")
       }
 
-      // Redirect to login page after successful registration
+      toast({
+        title: "Success",
+        description: "Your account has been created successfully.",
+      })
+
+      // Redirect to login page
       router.push("/login")
-    } catch (error: any) {
-      form.setError("root", {
-        message: error.message || "Something went wrong",
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Something went wrong",
+        variant: "destructive",
       })
     } finally {
       setLoading(false)
@@ -140,40 +150,6 @@ export default function RegisterForm() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone Number (Optional)</FormLabel>
-                <FormControl>
-                  <Input type="tel" placeholder="Enter your phone number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Address (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter your address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {form.formState.errors.root && (
-            <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-              {form.formState.errors.root.message}
-            </div>
-          )}
 
           <Button
             type="submit"

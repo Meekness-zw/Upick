@@ -3,8 +3,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -15,44 +14,54 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { loginSchema } from "@/lib/validations/auth"
+import { useToast } from "@/components/ui/use-toast"
 
-export default function LoginForm() {
-  const router = useRouter()
+const formSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+})
+
+type FormData = z.infer<typeof formSchema>
+
+export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
 
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  async function onSubmit(values: any) {
+  async function onSubmit(data: FormData) {
     setIsLoading(true)
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       })
 
-      const data = await response.json()
+      const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to login")
+        throw new Error(result.error || "Failed to login")
       }
 
-      // Force a hard refresh to update the navbar
+      toast({
+        title: "Success",
+        description: "You have been logged in successfully.",
+      })
+
+      // Redirect to dashboard or home page
       window.location.href = "/"
-    } catch (error: any) {
-      console.error("Login error:", error)
-      form.setError("root", {
-        message: error.message || "Something went wrong. Please try again.",
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Something went wrong",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -69,11 +78,7 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  {...field}
-                />
+                <Input placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -86,30 +91,15 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Enter your password"
-                  {...field}
-                />
+                <Input type="password" placeholder="Enter your password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {form.formState.errors.root && (
-          <p className="text-sm text-red-500">
-            {form.formState.errors.root.message}
-          </p>
-        )}
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Login"}
         </Button>
-        <p className="text-center text-sm text-gray-500">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Register
-          </Link>
-        </p>
       </form>
     </Form>
   )

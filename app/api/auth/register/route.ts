@@ -1,66 +1,51 @@
 import { NextResponse } from "next/server"
-import bcrypt from "bcryptjs"
-import { prisma } from "@/lib/prisma"
-import { registerSchema } from "@/lib/validations/auth"
+import { hash } from "bcrypt"
+import prisma from "@/lib/prisma"
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const body = await req.json()
+    const body = await request.json()
+    const { email, password, name } = body
 
-    // Validate input data
-    const result = registerSchema.safeParse(body)
-    if (!result.success) {
+    if (!email || !password || !name) {
       return NextResponse.json(
-        { 
-          message: "Validation failed",
-          errors: result.error.errors 
-        },
+        { error: "All fields are required" },
         { status: 400 }
       )
     }
 
-    const { name, email, password, phoneNumber, address, confirmPassword } = result.data
-
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     })
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "User with this email already exists" },
+        { error: "Email already registered" },
         { status: 400 }
       )
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await hash(password, 10)
 
-    // Create user (excluding confirmPassword)
     const user = await prisma.user.create({
       data: {
-        name,
         email,
+        name,
         password: hashedPassword,
-        phoneNumber,
-        address,
       },
     })
 
-    // Remove password from response
-    const { password: _password, ...userWithoutPassword } = user
-
-    return NextResponse.json(
-      {
-        message: "User registered successfully",
-        user: userWithoutPassword,
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
       },
-      { status: 201 }
-    )
+    })
   } catch (error) {
     console.error("Registration error:", error)
     return NextResponse.json(
-      { message: "Something went wrong" },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
