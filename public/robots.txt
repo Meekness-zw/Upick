@@ -3,6 +3,10 @@ User-agent: *
 Allow: /
 Allow: /about
 Allow: /services
+Allow: /for-services
+Allow: /for-business
+Allow: /benefits
+Allow: /support
 Allow: /contact
 Allow: /blog/*
 Allow: /pricing

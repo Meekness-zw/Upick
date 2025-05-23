@@ -27,6 +27,10 @@ module.exports = {
                     '/',
                     '/about',
                     '/services',
+                    '/for-services',
+                    '/for-business',
+                    '/benefits',
+                    '/support',
                     '/contact',
                     '/blog/*',
                     '/pricing',
@@ -70,10 +74,24 @@ module.exports = {
     },
     transform: async (config, path) => {
         // Custom transform function to modify sitemap entries
+        const priorities = {
+            '/': 1.0,
+            '/about': 0.9,
+            '/services': 0.9,
+            '/for-services': 0.9,
+            '/for-business': 0.9,
+            '/benefits': 0.8,
+            '/support': 0.8,
+            '/contact': 0.8,
+            '/blog': 0.7,
+            '/pricing': 0.8,
+            '/faq': 0.7,
+        }
+
         return {
             loc: path,
             changefreq: config.changefreq,
-            priority: path === '/' ? 1.0 : config.priority,
+            priority: priorities[path] || config.priority,
             lastmod: new Date().toISOString(),
         }
     },
