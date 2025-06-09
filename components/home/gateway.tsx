@@ -71,7 +71,7 @@ export default function Gateway() {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
             <Image 
-              src="/images/gateway.jpg"
+              src="/images/gateway-image.jpg"
               alt="Transportation gateway"
               fill
               className="object-cover object-center"
