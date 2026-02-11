@@ -24,6 +24,16 @@ export default function Footer() {
                   Contacts
                 </Link>
               </li>
+              <li>
+                <Link href="/privacy-policy" className="text-sm hover:text-primary transition-colors">
+                  Privacy policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/delete-account" className="text-sm hover:text-primary transition-colors">
+                  Delete my data
+                </Link>
+              </li>
             </ul>
           </div>
 
